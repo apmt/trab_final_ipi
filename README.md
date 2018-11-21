@@ -1,9 +1,9 @@
 # trab_final_ipi
 
 # VERSIONS
-numpy 1.15.3\\
-cv2 2.4.9.1\\
-Python 2.7.12\\
+numpy 1.15.3\n
+cv2 2.4.9.1\n
+Python 2.7.12\n
 
 # NBIS
 
