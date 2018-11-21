@@ -1,9 +1,11 @@
 # trab_final_ipi
 
 # VERSIONS
-numpy 1.15.3\n
-cv2 2.4.9.1\n
-Python 2.7.12\n
+numpy 1.15.3
+
+cv2 2.4.9.1
+
+Python 2.7.12
 
 # NBIS
 
@@ -28,15 +30,25 @@ $ sudo make config
 $ sudo make it
 
 $ sudo install LIBNBIS=yes
+
 	Op:Add path toda vez que executar o programa:
+	
 		$ export PATH=$PATH:/usr/local/NBIS/Main/bin
+	
 	OBS:Add path permanente:
+	
 		$ gedit.bashrc
+		
 		No final do arquivo copie:
+		
 		export PATH=$PATH:/usr/local/NBIS/Main/bin
+		
 		Clique em salvar e depois:
+		
 		$ source .bashrc
+		
 		Feche o terminal, abra denovo e verifique com:
+		
 		$ echo $PATH
 
 # executar:
