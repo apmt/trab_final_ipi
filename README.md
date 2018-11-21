@@ -29,7 +29,7 @@ $ sudo make config
 
 $ sudo make it
 
-$ sudo install LIBNBIS=yes
+$ sudo make install LIBNBIS=yes
 
 	Op:Add path toda vez que executar o programa:
 	
