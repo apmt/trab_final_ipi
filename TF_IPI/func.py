@@ -3,7 +3,7 @@ import numpy as np
 import math
 import subprocess
 import os
-	
+
 def gamma_transform(number):
 	gamma = 1.5
 	const = 1	#Not 0.25 as the paper
