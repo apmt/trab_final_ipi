@@ -46,6 +46,8 @@ for image in images:
 	img_final = img_intepolated.copy()	#Mudar para: img_final = img_*.copy()
 	index = (i/2)+1
 	nmr_foto = (i%2)+1
+	img_final = fadeAndCrop(img_final, 2, 6)
+
 	# Salva imagem final como output/index_result.jpeg
 	fname='{}{}{}{}{}'.format('output/results/', index,'_', nmr_foto, '_result.jpeg')
 	cv2.imwrite(fname, img_final)

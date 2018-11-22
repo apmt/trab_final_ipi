@@ -112,3 +112,36 @@ def geometry_correction(img_aux):
 			for x in range (0, w):
 				img[y, x] = bigger_img[y, x+int(factor*(w-1-(limit_left*2))/2.0)]
 	return img
+
+def fadeAndCrop(img, grau, fade):
+        h, w = img.shape
+        x = range(0, 500, 50)
+        y = [100, 80, 60, 50, 50, 50, 50, 50, 50, 50]
+        p = np.polyfit(x,y,grau)
+        polinomio = np.polyval(p,range(0, h, 1))
+        somaFade = range(0, 255, fade)
+        tamSomaFade = np.size(somaFade)
+        matriz = np.ones((h, w))*255
+        cropped = np.array(matriz, np.uint8)
+        for i in range(1, h, 1):
+            for j in range(1, w, 1):
+				if(j>polinomio[i] and j<(w-polinomio[i])):
+					cropped[i][j] = img[i][j]
+					if(math.ceil(j-polinomio[i])<=tamSomaFade):
+						cropped[i][j] = cropped[i][j] + somaFade[int(math.ceil(j-polinomio[i])) - 1]
+					if(math.ceil((w-polinomio[i])-j) > 0 and math.ceil((w-polinomio[i])-j) <= tamSomaFade):
+						cropped[i][j] = cropped[i][j] + somaFade[int(math.ceil((w-polinomio[i])-j)) - 1]
+					if(cropped[i][j] > 255):
+						cropped[i][j] = 255
+        for j in range(1, w, 1):
+            for i in range (1, tamSomaFade, 1):
+                cropped[i][j] = cropped[i][j] + somaFade[i]
+                if(cropped[i][j] > 255):
+                    cropped[i][j] = 255
+
+        for j in range(1, w, 1):
+            for i in range((h-tamSomaFade+1), h, 1):
+                cropped[i][j] = cropped[i][j] + somaFade[i-h+tamSomaFade]
+                if(cropped[i][j] > 255):
+                    cropped[i][j] = 255
+        return cropped   
