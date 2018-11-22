@@ -1,14 +1,31 @@
+import os
+import shutil
 import glob
 import cv2
 from func import *
 from clean import *
 
+try:
+	os.mkdir('./output')
+except OSError:
+	shutil.rmtree('./output')
+	os.mkdir('./output')
+os.mkdir('./output/compares')
+os.mkdir('./output/results')
+
+try:
+	os.mkdir('./aux')
+except OSError:
+	shutil.rmtree('./aux')
+	os.mkdir('./aux')
+
 # Recebe todas imagens
-images = glob.glob("Images/*.bmp")
-index = 0
+images = sorted(glob.glob("Images/*.bmp"))
+i = 0
 qnt_img = len(images)
 # Para cada imagem:
 for image in images:
+	print images[i]
 	# Le imagem
 	img = cv2.imread(image, 0)
 	# Processamentos iniciais(local hitogram equalization and gamma transform):
@@ -26,18 +43,24 @@ for image in images:
 	# Calcula imagem media a partir das imagens binarias filtradas com gaussianas (kernel=[3, 5, 7, 9])
 	img_bi_media = average_bi(img_bi_1, img_bi_2, img_bi_3, img_bi_4)
 	######Outros Processos#######
-	#
+	img_intepolated = geometry_correction(img_bi_media)
 	#############################
-	img_final = img_bi_media.copy()	#Mudar para: img_final = img_*.copy()
-	# Salva imagem final como output/index_result.bmp
-	fname='{}{}{}'.format('output/', index, '_result.bmp')
+	img_final = img_intepolated.copy()	#Mudar para: img_final = img_*.copy()
+	index = (i/2)+1
+	nmr_foto = (i%2)+1
+	# Salva imagem final como output/index_result.jpeg
+	fname='{}{}{}{}{}'.format('output/results/', index,'_', nmr_foto, '_result.jpeg')
 	cv2.imwrite(fname, img_final)
 	# Concatena imagem inicial e final para comparar
 	compare = np.concatenate((img, img_final), axis = 1)
-	# Salva imagem concatenada como output/index_compare.bmp
-	fname='{}{}{}'.format('output/', index, '_compare.bmp')
+	# Salva imagem concatenada como output/index_compare.jpeg
+	fname='{}{}{}{}{}'.format('output/compares/', index,'_', nmr_foto, '_compare.jpeg')
 	cv2.imwrite(fname, compare)
 	# Incrementa o indice da imagem
-	index += 1
+	i += 1
 	print "carregando", (index*100/qnt_img), "%"
 print "imagens processadas em: /output"
+try:
+	shutil.rmtree('./aux')
+except OSError:
+	print 0
