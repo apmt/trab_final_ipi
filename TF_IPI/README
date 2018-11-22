@@ -30,6 +30,6 @@ $ sudo make install LIBNBIS=yes
 # executar:
 $ python main.py
 
-# excluir output imagens:
-$ python clean.py
+# Finger print quality:
+$ python nfiq.py
  
