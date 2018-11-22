@@ -112,3 +112,10 @@ def geometry_correction(img_aux):
 			for x in range (0, w):
 				img[y, x] = bigger_img[y, x+int(factor*(w-1-(limit_left*2))/2.0)]
 	return img
+
+def add_texture(img_aux):
+	img = img_aux.copy()
+	h, w = img.shape
+	g_kernel = cv2.getGaborKernel((21, 21), 8.0, np.pi/4, 10.0, 0.5, 0, ktype=cv2.CV_32F)
+	img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
+	return img

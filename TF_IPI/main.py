@@ -43,6 +43,7 @@ for image in images:
 	######Outros Processos#######
 	img_intepolated = geometry_correction(img_bi_media)
 	#############################
+	####img_texture = add_texture(img_intepolated)
 	img_final = img_intepolated.copy()	#Mudar para: img_final = img_*.copy()
 	index = (i/2)+1
 	nmr_foto = (i%2)+1
@@ -56,7 +57,7 @@ for image in images:
 	cv2.imwrite(fname, compare)
 	# Incrementa o indice da imagem
 	i += 1
-	print "carregando", (index*100/qnt_img), "%"
+	print "carregando", (i*100/qnt_img), "%"
 print "imagens processadas em: /output"
 try:
 	shutil.rmtree('./aux')
