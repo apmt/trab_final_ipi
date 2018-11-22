@@ -3,7 +3,6 @@ import shutil
 import glob
 import cv2
 from func import *
-from clean import *
 
 try:
 	os.mkdir('./output')
@@ -25,7 +24,6 @@ i = 0
 qnt_img = len(images)
 # Para cada imagem:
 for image in images:
-	print images[i]
 	# Le imagem
 	img = cv2.imread(image, 0)
 	# Processamentos iniciais(local hitogram equalization and gamma transform):
