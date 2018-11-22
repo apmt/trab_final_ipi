@@ -1,11 +1,12 @@
 import glob
 import cv2
 from func import *
+from clean import *
 
 # Recebe todas imagens
 images = glob.glob("Images/*.bmp")
-index = 1
-
+index = 0
+qnt_img = len(images)
 # Para cada imagem:
 for image in images:
 	# Le imagem
@@ -17,14 +18,17 @@ for image in images:
 	img_kern_5 = gaussian_low_pass_filter(img_eq_gam, 5)
 	img_kern_7 = gaussian_low_pass_filter(img_eq_gam, 7)
 	img_kern_9 = gaussian_low_pass_filter(img_eq_gam, 9)
-	# Calcula imagem media a partir das imagens filtradas com gaussianas (kernel=[3, 5, 7, 9])
-	img_media = average_img(img_kern_3, img_kern_5, img_kern_7, img_kern_9)
-	# Binarization da imagem media por meio do NBIS-mindtct
-	img_bi = binarization(img_media)
+	# Binarization das imagens por meio do NBIS-mindtct
+	img_bi_1 = binarization(img_kern_3)
+	img_bi_2 = binarization(img_kern_5)
+	img_bi_3 = binarization(img_kern_7)
+	img_bi_4 = binarization(img_kern_9)
+	# Calcula imagem media a partir das imagens binarias filtradas com gaussianas (kernel=[3, 5, 7, 9])
+	img_bi_media = average_bi(img_bi_1, img_bi_2, img_bi_3, img_bi_4)
 	######Outros Processos#######
 	#
 	#############################
-	img_final = img_bi.copy()	#Mudar para: img_final = img_*.copy()
+	img_final = img_bi_media.copy()	#Mudar para: img_final = img_*.copy()
 	# Salva imagem final como output/index_result.bmp
 	fname='{}{}{}'.format('output/', index, '_result.bmp')
 	cv2.imwrite(fname, img_final)
@@ -35,3 +39,5 @@ for image in images:
 	cv2.imwrite(fname, compare)
 	# Incrementa o indice da imagem
 	index += 1
+	print "carregando", (index*100/qnt_img), "%"
+print "imagens processadas em: /output"

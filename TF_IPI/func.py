@@ -10,7 +10,8 @@ def gamma_transform(number):
 	result = 255*const*((number/255)**gamma)
 	return result
 
-def local_histogram_equalization_and_gamma_transform(img):
+def local_histogram_equalization_and_gamma_transform(img_aux):
+	img = img_aux.copy()
 	h, w = img.shape
 	img_aux_border = cv2.copyMakeBorder(img,0,8,0,8,cv2.BORDER_CONSTANT,value=0)
 	for x in range (0, w, 8):
@@ -24,7 +25,8 @@ def local_histogram_equalization_and_gamma_transform(img):
 						img[y+q, x+p] = int(gamma_transform(normalized_CDF_region[region[q, p]]))
 	return img
 
-def gaussian_low_pass_filter(img, kernel):
+def gaussian_low_pass_filter(img_aux, kernel):
+	img = img_aux.copy()
 	sigma = kernel/(2*(math.sqrt(2*(math.log(2)))))
 	img = cv2.GaussianBlur(img, (kernel, kernel), sigma)
 	return img
@@ -37,6 +39,21 @@ def average_img (img1, img2, img3, img4):
 			pixel = int(img1[y, x])+int(img2[y, x])+int(img3[y, x])+int(img4[y, x])
 			pixel /= 4
 			img[y, x] = int(pixel)
+	return img
+
+def average_bi (img1, img2, img3, img4):
+	white = 255
+	black = 0
+	img = img1.copy()
+	h, w = img.shape
+	for x in range (0, w):
+		for y in range (0, h):
+			brancos = int(img1[y, x])+int(img2[y, x])+int(img3[y, x])+int(img4[y, x])
+			brancos /= 255
+			if(brancos <= 2):
+				img[y, x] = black
+			else:
+				img[y, x] = white
 	return img
 
 def binarization (img):
