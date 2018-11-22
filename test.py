@@ -36,12 +36,14 @@ def idk_2(img_aux):
 	for y in range (0, h):
 		limit_left = polinomy_letf(h-1-y)
 		limit_right =  polinomy_right(h-1-y)
+		cv2.imshow('img',img)
+		cv2.waitKey(0)
 		if(limit_left != limit_right):
 			tam_inicial = limit_left-limit_right
 			factor = float(w)/float(tam_inicial)
 			bigger_img = cv2.resize(img, (int(factor*w), h), 0, 0, interpolation = cv2.INTER_CUBIC)
 			for x in range (0, w):
-				img[y, x] = bigger_img[y, x+int(((factor*w)-w)/2.0)]
+				img[y, x] = bigger_img[y, x+int(factor*(w-1-(limit_left*2))/2.0)]
 	return img
 
 img1 = cv2.imread("img.bmp", 0)
