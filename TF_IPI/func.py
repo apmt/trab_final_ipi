@@ -3,6 +3,8 @@ import numpy as np
 import math
 import subprocess
 import os
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 
 def gamma_transform(number):
 	gamma = 1.5
@@ -113,42 +115,43 @@ def geometry_correction(img_aux):
 				img[y, x] = bigger_img[y, x+int(factor*(w-1-(limit_left*2))/2.0)]
 	return img
 
-def fadeAndCrop(img, grau, fade):
-        h, w = img.shape
-        x = range(0, 500, 50)
-        y = [100, 80, 60, 50, 50, 50, 50, 50, 50, 50]
-        p = np.polyfit(x,y,grau)
-        polinomio = np.polyval(p,range(0, h, 1))
-        somaFade = range(0, 255, fade)
-        tamSomaFade = np.size(somaFade)
-        matriz = np.ones((h, w))*255
-        cropped = np.array(matriz, np.uint8)
-        for i in range(1, h, 1):
-            for j in range(1, w, 1):
-				if(j>polinomio[i] and j<(w-polinomio[i])):
-					cropped[i][j] = img[i][j]
-					if(math.ceil(j-polinomio[i])<=tamSomaFade):
-						cropped[i][j] = cropped[i][j] + somaFade[int(math.ceil(j-polinomio[i])) - 1]
-					if(math.ceil((w-polinomio[i])-j) > 0 and math.ceil((w-polinomio[i])-j) <= tamSomaFade):
-						cropped[i][j] = cropped[i][j] + somaFade[int(math.ceil((w-polinomio[i])-j)) - 1]
-					if(cropped[i][j] > 255):
-						cropped[i][j] = 255
-        for j in range(1, w, 1):
-            for i in range (1, tamSomaFade, 1):
-                cropped[i][j] = cropped[i][j] + somaFade[i]
-                if(cropped[i][j] > 255):
-                    cropped[i][j] = 255
-
-        for j in range(1, w, 1):
-            for i in range((h-tamSomaFade+1), h, 1):
-                cropped[i][j] = cropped[i][j] + somaFade[i-h+tamSomaFade]
-                if(cropped[i][j] > 255):
-                    cropped[i][j] = 255
-        return cropped   
-
 def add_texture(img_aux):
 	img = img_aux.copy()
 	h, w = img.shape
-	g_kernel = cv2.getGaborKernel((21, 21), 8.0, np.pi/4, 10.0, 0.5, 0, ktype=cv2.CV_32F)
-	img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
+	fig, ax = plt.subplots(figsize=[w/100.0, h/100.0])
+	fig.subplots_adjust(left=0, right=1, top=1, bottom=0)
+	im = ax.imshow(img, cmap='gray')
+	NUM = h*w/40
+	ells = [Ellipse(xy=(np.random.rand(2) * [w, h]),
+					width=np.random.rand() * 5, height=np.random.rand() * 5,
+					angle=np.random.rand() * 360, fill=True, color='white')
+			for i in range(NUM)]
+	for e in ells:
+		ax.add_artist(e)
+		e.set_clip_box(ax.bbox)
+		e.set_alpha(np.random.rand())
+	ax.axis('off')
+	plt.box(False)
+	fig.canvas.draw()
+	X = np.array(fig.canvas.renderer._renderer)
+	img = X.copy()
+	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	return img
+
+def add_fade(img_aux):
+	img = img_aux.copy()
+	h, w = img.shape
+	factor = 0.05
+	x_limit = int((w*1.0/h)*factor*w)
+	y_limit = int(factor*h)
+	for y in range (0, h):
+		for x in range (0, x_limit):
+			Dh = (x_limit-x)**2
+			img[y, x] = min(img[y, x]+Dh, 255)
+			img[y, w-1-x] = min(img[y, w-1-x]+Dh, 255)
+	for x in range (0, w):
+		for y in range (0, y_limit):
+			Dv = (y_limit-y)**2
+			img[y, x] = min(img[y, x]+Dv, 255)
+			img[h-1-y, x] = min(img[h-1-y, x]+Dv, 255)
 	return img

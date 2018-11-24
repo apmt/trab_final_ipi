@@ -51,7 +51,7 @@ for image in images:
 	img_fade = add_fade(img_texture)
 	#############################
 	####img_texture = add_texture(img_intepolated)
-	img_final = img_fade.copy()	#Mudar para: img_final = img_*.copy()
+	img_final = img_intepolated.copy()	#Mudar para: img_final = img_*.copy()
 	index = (i/2)+1
 	nmr_foto = (i%2)+1
 	# Salva imagem final como output/index_result.jpeg
