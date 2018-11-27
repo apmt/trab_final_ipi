@@ -1,9 +1,8 @@
-
 #VERSIONS
 numpy 1.15.3
 cv2 2.4.9.1
 Python 2.7.12
- matplotlib 2.2.3
+matplotlib 2.2.3
 
 #NBIS
 Baixar NBIS_5.0.0: http://nigos.nist.gov:8080/nist/nbis/nbis_v5_0_0.zip
@@ -28,12 +27,7 @@ $ sudo make install LIBNBIS=yes
 		Feche o terminal, abra denovo e verifique com:
 		$ echo $PATH
 
-# executar main:
-$ python main.py
+# Para executar todos passos:
+$ python projeto.py
 
-# executar main2(proposta:sem textura e sem fade):
-$ python main2.py
-
-# Qualificar o algoritmo:
-$ python scores.py
  

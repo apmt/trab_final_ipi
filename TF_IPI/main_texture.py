@@ -1,7 +1,7 @@
 # Processamento sem textura
 # Input - Images(dir)
 # Functions - func.py(file)
-# Output - output(dir)
+# Output - output_texture(dir)
 import os
 import shutil
 import glob
@@ -10,12 +10,13 @@ from func import *
 
 # Criando diretorios
 try:
-	os.mkdir('./output')
+	os.mkdir('./output_texture')
 except OSError:
-	shutil.rmtree('./output')
-	os.mkdir('./output')
-os.mkdir('./output/compares')
-os.mkdir('./output/results')
+	shutil.rmtree('./output_texture')
+	os.mkdir('./output_texture')
+os.mkdir('./output_texture/compares')
+os.mkdir('./output_texture/results')
+
 try:
 	os.mkdir('./aux')
 except OSError:
@@ -26,7 +27,6 @@ except OSError:
 images = sorted(glob.glob("Images/*.bmp"))
 i = 0
 qnt_img = len(images)
-
 # Para cada imagem:
 for image in images:
 	# Le imagem
@@ -52,24 +52,27 @@ for image in images:
 
 	# Bilateral 5th degree regression and bicubic interpolation
 	img_intepolated = geometry_correction(img_bi_media)
+	
+	# Add random texture (Ellipses with random parameters)
+	img_texture = add_texture(img_intepolated)
 
 	# Apply fading
-	img_fade = add_fade(img_intepolated)
+	img_fade = add_fade(img_texture)
 
 	# FINAL IMAGE:
 	img_final = img_fade.copy()
 	index = (i/2)+1
 	nmr_foto = (i%2)+1
 
-	# Salva imagem final como output/index_result.jpeg
-	fname='{}{}{}{}{}'.format('output/results/', index,'_', nmr_foto, '_result.jpeg')
+	# Salva imagem final como output_texture/index_result.jpeg
+	fname='{}{}{}{}{}'.format('output_texture/results/', index,'_', nmr_foto, '_result.jpeg')
 	cv2.imwrite(fname, img_final)
 
 	# Concatena imagem inicial e final para comparar
 	compare = np.concatenate((img, img_final), axis = 1)
 
 	# Salva imagem concatenada como output/index_compare.jpeg
-	fname='{}{}{}{}{}'.format('output/compares/', index,'_', nmr_foto, '_compare.jpeg')
+	fname='{}{}{}{}{}'.format('output_texture/compares/', index,'_', nmr_foto, '_compare.jpeg')
 	cv2.imwrite(fname, compare)
 
 	# Incrementa o indice da imagem
@@ -77,7 +80,7 @@ for image in images:
 	print "carregando", (i*100/qnt_img), "%"
 
 # Finalizacoes do algoritmo
-print "imagens processadas em: /output"
+print "imagens processadas em: /output_texture"
 try:
 	shutil.rmtree('./aux')
 except OSError:
